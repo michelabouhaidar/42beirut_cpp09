@@ -5,33 +5,32 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mabou-ha <mabou-ha>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/24 03:14:46 by mabou-ha          #+#    #+#             */
-/*   Updated: 2025/11/24 03:14:46 by mabou-ha         ###   ########.fr       */
+/*   Created: 2025/11/24 02:51:52 by mabou-ha          #+#    #+#             */
+/*   Updated: 2025/11/24 03:15:09 by mabou-ha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "BitcoinExchange.hpp"
+#include "RPN.hpp"
 #include <iostream>
 #include <stdexcept>
 
 int main(int argc, char **argv)
 {
-if (argc != 2)
-{
-std::cerr << "Error: could not open file." << std::endl;
-return 1;
-}
-
-try
-{
-BitcoinExchange ex("data.csv");
-ex.processInput(argv[1]);
-}
-catch (const std::exception &e)
-{
-std::cerr << e.what() << std::endl;
-return 1;
-}
-
-return 0;
+	if (argc != 2)
+	{
+		std::cerr << "Error" << std::endl;
+		return 1;
+	}
+	try
+	{
+		RPN rpn;
+		int result = rpn.evaluate(argv[1]);
+		std::cout << result << std::endl;
+	}
+	catch (const std::exception &)
+	{
+		std::cerr << "Error" << std::endl;
+		return 1;
+	}
+	return 0;
 }

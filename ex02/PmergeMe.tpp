@@ -6,7 +6,7 @@
 /*   By: mabou-ha <mabou-ha>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/30 20:52:36 by mabou-ha          #+#    #+#             */
-/*   Updated: 2025/12/21 06:08:00 by mabou-ha         ###   ########.fr       */
+/*   Updated: 2025/12/21 09:18:06 by mabou-ha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,18 @@ void PmergeMe::mergeInsertSort(T& cont, int order)
     //     std::cout << *(*it) << " ";
     // }
     // std::cout << "\n";
+	int prev_jack = jacobstahlSequence(1);
+	int inserted = 0;
+	for (int k = 2;; k++)
+	{
+		int curr_jack = jacobstahlSequence(k);
+		int diff_jack = curr_jack - prev_jack;
+		int offset = 0;
+		if (diff_jack > static_cast<int>(pend.size()))
+			break;
+		int looping = diff_jack;
+		IteratorContainer pend_it = 
+	}
 }
 
 template <typename T>

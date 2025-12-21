@@ -6,7 +6,7 @@
 /*   By: mabou-ha <mabou-ha>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 00:22:16 by mabou-ha          #+#    #+#             */
-/*   Updated: 2025/12/01 02:47:25 by mabou-ha         ###   ########.fr       */
+/*   Updated: 2025/12/21 06:24:01 by mabou-ha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,8 @@ T iterJump(T it, int steps);
 
 template <typename T>
 bool compareElements(T leftIterator, T rightIterator);
+
+long jacobstahlSequence(long n);
 
 # include "PmergeMe.tpp"
 

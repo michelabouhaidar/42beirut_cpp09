@@ -6,7 +6,7 @@
 /*   By: mabou-ha <mabou-ha>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/30 20:52:36 by mabou-ha          #+#    #+#             */
-/*   Updated: 2025/12/01 02:47:20 by mabou-ha         ###   ########.fr       */
+/*   Updated: 2025/12/21 06:08:00 by mabou-ha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,15 +25,15 @@ void PmergeMe::mergeInsertSort(T& cont, int order)
 	typedef typename T::iterator Iterator;
 
 	int size = static_cast<int>(cont.size());
-	int pairCount = size / order;
+	int elementCount = size / order;
 
-	if (pairCount < 2)
+	if (elementCount < 2)
 		return ;
 
-	bool oddPairNumber = pairCount % 2 == 1;
+	bool oddPairNumber = elementCount % 2 == 1;
 
 	Iterator start = cont.begin();
-	Iterator last = iterJump(cont.begin(), order * pairCount);
+	Iterator last = iterJump(cont.begin(), order * elementCount);
 	Iterator end = iterJump(last, -(oddPairNumber * order));
 
 	int jump = 2 * order;
@@ -53,42 +53,39 @@ void PmergeMe::mergeInsertSort(T& cont, int order)
 	IteratorContainer main;
 	IteratorContainer pend;
 
-	Iterator begin = cont.begin();
-	main.insert(main.end(), iterJump(begin, order - 1));
-	main.insert(main.end(), iterJump(begin, order * 2 - 1));
-	for (int i = 4; i <= pairCount; i += 2)
+	main.insert(main.end(), iterJump(cont.begin(), order - 1));
+	main.insert(main.end(), iterJump(cont.begin(), order * 2 - 1));
+	for (int i = 4; i <= elementCount; i += 2)
 	{
-		pend.insert(pend.end(), iterJump(begin, order * (i - 1) - 1));
-		main.insert(main.end(), iterJump(begin, order * i - 1));
+		pend.insert(pend.end(), iterJump(cont.begin(), order * (i - 1) - 1));
+		main.insert(main.end(), iterJump(cont.begin(), order * i - 1));
 	}
 	if (oddPairNumber)
 	{
 		pend.insert(pend.end(), iterJump(end, order - 1));
 	}
 
-    std::cout << "Main chain (order = " << order << "): ";
-    for (typename IteratorContainer::iterator it = main.begin();
-         it != main.end(); ++it)
-    {
-        std::cout << *(*it) << " ";
-    }
-    std::cout << "\n";
-    std::cout << "Pending chain (order = " << order << "): ";
-    for (typename IteratorContainer::iterator it = pend.begin();
-         it != pend.end(); ++it)
-    {
-        std::cout << *(*it) << " ";
-    }
-    std::cout << "\n";
+    // std::cout << "Main chain (order = " << order << "): ";
+    // for (typename IteratorContainer::iterator it = main.begin();
+    //      it != main.end(); ++it)
+    // {
+    //     std::cout << *(*it) << " ";
+    // }
+    // std::cout << "\n";
+    // std::cout << "Pending chain (order = " << order << "): ";
+    // for (typename IteratorContainer::iterator it = pend.begin();
+    //      it != pend.end(); ++it)
+    // {
+    //     std::cout << *(*it) << " ";
+    // }
+    // std::cout << "\n";
 }
 
 template <typename T>
 void PmergeMe::swapPairs(T it, int order)
 {
-	T leftStart = it;
-	std::advance(it, -order + 1);
-	T rightStart = it;
-	std::advance(leftStart, order);
+	T leftStart = iterJump(it, -order + 1);
+	T rightStart = iterJump(leftStart, order);
 	for (int i = 0; i < order; ++i)
 	{
 		std::iter_swap(leftStart, rightStart);

@@ -6,7 +6,7 @@
 /*   By: mabou-ha <mabou-ha>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 00:22:13 by mabou-ha          #+#    #+#             */
-/*   Updated: 2025/12/01 02:47:28 by mabou-ha         ###   ########.fr       */
+/*   Updated: 2025/12/21 06:44:45 by mabou-ha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,3 +25,20 @@ PmergeMe& PmergeMe::operator=(const PmergeMe& obj)
 }
 
 PmergeMe::~PmergeMe() {}
+
+long jacobstahlSequence(long n)
+{
+	if (n == 0)
+		return 0;
+	if (n == 1)
+		return 1;
+	long a = 0;
+	long b = 1;
+	for (long i = 2; i <= n; ++i)
+    {
+        long c = b + 2 * a;
+        a = b;
+        b = c;
+    }
+	return b;
+}

@@ -6,7 +6,7 @@
 /*   By: mabou-ha <mabou-ha>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 00:22:18 by mabou-ha          #+#    #+#             */
-/*   Updated: 2025/12/01 02:48:39 by mabou-ha         ###   ########.fr       */
+/*   Updated: 2025/12/23 00:01:08 by mabou-ha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,12 +120,16 @@ int main(int argc, char **argv)
 
         PmergeMe sorter;
 		sorter.mergeInsertionSort(v);
+		int vecComps = PmergeMe::comparisonNumber_;
+
 		sorter.mergeInsertionSort(d);
+		// int deqComps = PmergeMe::comparisonNumber_;
 			
 		std::cout << "After:   " << containerToString(v) << "\n";
 		std::cout << "Sorted?  " << (isSorted(v) ? "yes" : "no") << "\n";
 			
-		std::cout << "Comparisons: " << PmergeMe::comparisonNumber_ << "\n";
+		std::cout << "Number of comparisons: " << vecComps << "\n";
+		// std::cout << "Comparisons: " << deqComps << "\n";
 
     }
     catch (const std::exception &e)

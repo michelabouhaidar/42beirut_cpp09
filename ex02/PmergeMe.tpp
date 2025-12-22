@@ -6,7 +6,7 @@
 /*   By: mabou-ha <mabou-ha>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/30 20:52:36 by mabou-ha          #+#    #+#             */
-/*   Updated: 2025/12/21 09:18:06 by mabou-ha         ###   ########.fr       */
+/*   Updated: 2025/12/22 23:53:06 by mabou-ha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,16 +53,16 @@ void PmergeMe::mergeInsertSort(T& cont, int order)
 	IteratorContainer main;
 	IteratorContainer pend;
 
-	main.insert(main.end(), iterJump(cont.begin(), order - 1));
-	main.insert(main.end(), iterJump(cont.begin(), order * 2 - 1));
+	main.push_back(iterJump(cont.begin(), order - 1));
+	main.push_back(iterJump(cont.begin(), order * 2 - 1));
 	for (int i = 4; i <= elementCount; i += 2)
 	{
-		pend.insert(pend.end(), iterJump(cont.begin(), order * (i - 1) - 1));
-		main.insert(main.end(), iterJump(cont.begin(), order * i - 1));
+		pend.push_back(iterJump(cont.begin(), order * (i - 1) - 1));
+		main.push_back(iterJump(cont.begin(), order * i - 1));
 	}
 	if (oddPairNumber)
 	{
-		pend.insert(pend.end(), iterJump(end, order - 1));
+		pend.push_back(iterJump(end, order - 1));
 	}
 
     // std::cout << "Main chain (order = " << order << "): ";
@@ -80,7 +80,7 @@ void PmergeMe::mergeInsertSort(T& cont, int order)
     // }
     // std::cout << "\n";
 	int prev_jack = jacobstahlSequence(1);
-	int inserted = 0;
+	int inserted_nb = 0;
 	for (int k = 2;; k++)
 	{
 		int curr_jack = jacobstahlSequence(k);
@@ -89,7 +89,51 @@ void PmergeMe::mergeInsertSort(T& cont, int order)
 		if (diff_jack > static_cast<int>(pend.size()))
 			break;
 		int looping = diff_jack;
-		IteratorContainer pend_it = 
+		typename IteratorContainer::iterator pend_it = iterJump(pend.begin(), diff_jack - 1);
+		typename IteratorContainer::iterator bound_it = iterJump(main.begin(), curr_jack + inserted_nb);
+		while (looping)
+		{
+			typename IteratorContainer::iterator idx = std::upper_bound(main.begin(), bound_it, *pend_it, compareElements<Iterator>);
+			typename IteratorContainer::iterator inserted = main.insert(idx, *pend_it);
+			pend_it = pend.erase(pend_it);
+			looping--;
+			if (looping)
+				std::advance(pend_it, -1);
+			offset += (inserted - main.begin()) == curr_jack + inserted_nb;
+			bound_it = iterJump(main.begin(), curr_jack + inserted_nb - offset);
+		}
+		prev_jack = curr_jack;
+		inserted_nb += diff_jack;
+		offset = 0;
+	}
+	if (!pend.empty())
+	{
+		for (ssize_t i = pend.size() - 1; i >= 0; i--)
+		{
+			typename IteratorContainer::iterator curr_pend = iterJump(pend.begin(), i);
+			typename IteratorContainer::iterator curr_bound = iterJump(main.begin(), main.size() - pend.size() + i + oddPairNumber);
+			typename IteratorContainer::iterator idx = std::upper_bound(main.begin(), curr_bound, *curr_pend, compareElements<Iterator>);
+			main.insert(idx, *curr_pend);
+		}
+	}
+	std::vector<int> copy;
+	copy.reserve(cont.size());
+	for (typename IteratorContainer::iterator it = main.begin(); it != main.end(); it++)
+	{
+		for (int i = 0; i < order; i++)
+		{
+			Iterator pair_start = *it;
+			std::advance(pair_start, -order + i + 1);
+			copy.push_back(*pair_start);
+		}
+	}
+	Iterator container_it = cont.begin();
+	std::vector<int>::iterator copy_it = copy.begin();
+	while (copy_it != copy.end())
+	{
+		*container_it = *copy_it;
+		container_it++;
+		copy_it++;
 	}
 }
 

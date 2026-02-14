@@ -84,12 +84,12 @@ bool BitcoinExchange::isValidDate(const std::string& date) const
 		month_days = 30;
 	else
 	{
-		if ((year  % 4 == 0 && year % 100 != 0) || (year % 400 == 0))
+		if ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0))
 			month_days = 29;
 		else
 			month_days = 28;
 	}
-	if ( day < 1 || day > month_days)
+	if (day < 1 || day > month_days)
 		return false;
 	return true;
 }
@@ -158,7 +158,7 @@ void BitcoinExchange::processInput(const std::string &inputFile) const
 	std::ifstream file(inputFile.c_str());
 	if (!file.is_open())
 	{
-		std::cerr << "Error: could not opne file." << std::endl;
+		std::cerr << "Error: could not open file." << std::endl;
 		return;
 	}
 	std::string line;

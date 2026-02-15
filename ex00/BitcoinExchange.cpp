@@ -6,7 +6,7 @@
 /*   By: mabou-ha <mabou-ha>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 21:18:24 by mabou-ha          #+#    #+#             */
-/*   Updated: 2025/11/24 00:19:36 by mabou-ha         ###   ########.fr       */
+/*   Updated: 2026/02/15 00:00:00 by mabou-ha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,18 +26,7 @@ BitcoinExchange::BitcoinExchange(const std::string& dbFile)
 	localDatabase(dbFile);
 }
 
-BitcoinExchange::BitcoinExchange(const BitcoinExchange& obj): rates_(obj.rates_) {}
-
-BitcoinExchange& BitcoinExchange::operator=(const BitcoinExchange& obj)
-{
-	if (this != &obj)
-		rates_ = obj.rates_;
-	return *this;
-}
-
-BitcoinExchange::~BitcoinExchange() {}
-
-std::string BitcoinExchange::trim(const std::string& s) const
+static std::string trim(const std::string& s)
 {
 	std::string::size_type start = 0;
 	while (start < s.size() && (s[start] == ' ' || s[start] == '\t'))
@@ -48,7 +37,7 @@ std::string BitcoinExchange::trim(const std::string& s) const
 	return s.substr(start, end - start);
 }
 
-bool BitcoinExchange::isValidDateFormat(const std::string& date) const
+static bool isValidDateFormat(const std::string& date)
 {
 	if (date.length() != 10)
 		return false;
@@ -61,14 +50,14 @@ bool BitcoinExchange::isValidDateFormat(const std::string& date) const
 		}
 		else
 		{
-			if(!std::isdigit(static_cast<unsigned int>(date[i])))
+			if (!std::isdigit(static_cast<unsigned char>(date[i])))
 				return false;
 		}
 	}
 	return true;
 }
 
-bool BitcoinExchange::isValidDate(const std::string& date) const
+static bool isValidDate(const std::string& date)
 {
 	if (!isValidDateFormat(date))
 		return false;
@@ -94,7 +83,7 @@ bool BitcoinExchange::isValidDate(const std::string& date) const
 	return true;
 }
 
-bool BitcoinExchange::parseValue(const std::string& str, double& value) const
+static bool parseValue(const std::string& str, double& value)
 {
 	if (str.empty())
 		return false;
@@ -108,16 +97,16 @@ bool BitcoinExchange::parseValue(const std::string& str, double& value) const
 	return true;
 }
 
-bool BitcoinExchange::getRateForDate(const std::string& date, double &rate) const
+static bool getRateForDate(std::map<std::string, double> map, const std::string& date, double &rate)
 {
-	if (rates_.empty())
+	if (map.empty())
 		return false;
-	std::map<std::string, double>::const_iterator it = rates_.lower_bound(date);
-	if (it == rates_.end())
+	std::map<std::string, double>::const_iterator it = map.lower_bound(date);
+	if (it == map.end())
 		--it;
 	else if (it->first != date)
 	{
-		if (it == rates_.begin())
+		if (it == map.begin())
 			return false;
 		--it;
 	}
@@ -153,6 +142,18 @@ void BitcoinExchange::localDatabase(const std::string &dbFile)
 		throw std::runtime_error("Error: database contains no valid data.");
 }
 
+static bool hasStrictPipe(const std::string& line, std::string::size_type& pos)
+{
+	pos = line.find('|');
+	if (pos == std::string::npos)
+		return false;
+	if (pos == 0 || pos + 1 >= line.size())
+		return false;
+	if (line[pos - 1] != ' ' || line[pos + 1] != ' ')
+		return false;
+	return true;
+}
+
 void BitcoinExchange::processInput(const std::string &inputFile) const
 {
 	std::ifstream file(inputFile.c_str());
@@ -168,23 +169,25 @@ void BitcoinExchange::processInput(const std::string &inputFile) const
 	{
 		if (line.empty())
 			continue;
-		std::string::size_type pipePos = line.find('|');
-		if (pipePos == std::string::npos)
+
+		const std::string original = line;
+		std::string::size_type pipePos;
+		if (!hasStrictPipe(line, pipePos))
 		{
-			std::cerr << "Error: bad input => " << line << std::endl;
+			std::cerr << "Error: bad input => " << original << std::endl;
 			continue;
 		}
 		std::string date = trim(line.substr(0, pipePos));
 		std::string valueStr = trim(line.substr(pipePos + 1));
 		if (!isValidDate(date))
 		{
-			std::cerr << "Error: bad input => " << line << std::endl;
+			std::cerr << "Error: bad input => " << date << std::endl;
 			continue;
 		}
 		double value;
 		if (!parseValue(valueStr, value))
 		{
-			std::cerr << "Error: bad input => " << line << std::endl;
+			std::cerr << "Error: bad input => " << valueStr << std::endl;
 			continue;
 		}
 		if (value < 0)
@@ -194,13 +197,13 @@ void BitcoinExchange::processInput(const std::string &inputFile) const
 		}
 		if (value > 1000)
 		{
-			std::cerr << "Error: too large number." << std::endl;
+			std::cerr << "Error: too large a number." << std::endl;
 			continue;
 		}
 		double rate;
-		if (!getRateForDate(date, rate))
+		if (!getRateForDate(rates_, date, rate))
 		{
-			std::cerr << "Error: no rate available for date." << std::endl;
+			std::cerr << "Error: bad input => " << original << std::endl;
 			continue;
 		}
 		std::cout << date << " => " << value << " = " << (value * rate) << std::endl;

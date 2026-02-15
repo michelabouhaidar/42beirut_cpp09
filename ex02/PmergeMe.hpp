@@ -22,28 +22,12 @@
 class PmergeMe
 {
 	public:
+		static int comparisonNumber_;
 		PmergeMe();
-		PmergeMe(const PmergeMe& obj);
-		PmergeMe& operator=(const PmergeMe& obj);
-		~PmergeMe();
 
 		template <typename T>
 		void mergeInsertionSort(T& cont);
-
-		static int comparisonNumber_;
-	private:
-		template <typename T>
-		void swapPairs(T it, int order);
-		
-		template <typename T>
-		void mergeInsertSort(T& cont, int order);
 };
-
-template <typename T>
-T iterJump(T it, int steps);
-
-template <typename T>
-bool compareElements(T leftIterator, T rightIterator);
 
 long jacobstahlSequence(long n);
 

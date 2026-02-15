@@ -123,13 +123,13 @@ int main(int argc, char **argv)
 		int vecComps = PmergeMe::comparisonNumber_;
 
 		sorter.mergeInsertionSort(d);
-		// int deqComps = PmergeMe::comparisonNumber_;
+		int deqComps = PmergeMe::comparisonNumber_;
 			
 		std::cout << "After:   " << containerToString(v) << "\n";
 		std::cout << "Sorted?  " << (isSorted(v) ? "yes" : "no") << "\n";
 			
-		std::cout << "Number of comparisons: " << vecComps << "\n";
-		// std::cout << "Comparisons: " << deqComps << "\n";
+		std::cout << "Vector number of comparisons: " << vecComps << "\n";
+		std::cout << "Deque number of comparisons: " << deqComps << "\n";
 
     }
     catch (const std::exception &e)

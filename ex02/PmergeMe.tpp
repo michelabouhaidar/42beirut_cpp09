@@ -13,14 +13,34 @@
 #include "PmergeMe.hpp"
 
 template <typename T>
-void PmergeMe::mergeInsertionSort(T& cont)
+static T iterJump(T it, int steps)
 {
-	comparisonNumber_ = 0;
-	mergeInsertSort(cont, 1);
+	std::advance(it, steps);
+	return it;
 }
 
 template <typename T>
-void PmergeMe::mergeInsertSort(T& cont, int order)
+static void swapPairs(T it, int order)
+{
+	T leftStart = iterJump(it, -order + 1);
+	T rightStart = iterJump(leftStart, order);
+	for (int i = 0; i < order; ++i)
+	{
+		std::iter_swap(leftStart, rightStart);
+		++rightStart;
+		++leftStart;
+	}
+}
+
+template <typename T>
+static bool compareElements(T leftIterator, T rightIterator)
+{
+	PmergeMe::comparisonNumber_++;
+	return *leftIterator < *rightIterator;
+}
+
+template <typename T>
+static void mergeInsertSort(T& cont, int order)
 {
 	typedef typename T::iterator Iterator;
 
@@ -64,21 +84,6 @@ void PmergeMe::mergeInsertSort(T& cont, int order)
 	{
 		pend.push_back(iterJump(end, order - 1));
 	}
-
-    // std::cout << "Main chain (order = " << order << "): ";
-    // for (typename IteratorContainer::iterator it = main.begin();
-    //      it != main.end(); ++it)
-    // {
-    //     std::cout << *(*it) << " ";
-    // }
-    // std::cout << "\n";
-    // std::cout << "Pending chain (order = " << order << "): ";
-    // for (typename IteratorContainer::iterator it = pend.begin();
-    //      it != pend.end(); ++it)
-    // {
-    //     std::cout << *(*it) << " ";
-    // }
-    // std::cout << "\n";
 	int prev_jack = jacobstahlSequence(1);
 	int inserted_nb = 0;
 	for (int k = 2;; k++)
@@ -138,28 +143,8 @@ void PmergeMe::mergeInsertSort(T& cont, int order)
 }
 
 template <typename T>
-void PmergeMe::swapPairs(T it, int order)
+void PmergeMe::mergeInsertionSort(T& cont)
 {
-	T leftStart = iterJump(it, -order + 1);
-	T rightStart = iterJump(leftStart, order);
-	for (int i = 0; i < order; ++i)
-	{
-		std::iter_swap(leftStart, rightStart);
-		++rightStart;
-		++leftStart;
-	}
-}
-
-template <typename T>
-T iterJump(T it, int steps)
-{
-	std::advance(it, steps);
-	return it;
-}
-
-template <typename T>
-bool compareElements(T leftIterator, T rightIterator)
-{
-	PmergeMe::comparisonNumber_++;
-	return *leftIterator < *rightIterator;
+	comparisonNumber_ = 0;
+	mergeInsertSort(cont, 1);
 }

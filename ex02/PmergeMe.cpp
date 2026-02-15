@@ -16,16 +16,6 @@ int PmergeMe::comparisonNumber_ = 0;
 
 PmergeMe::PmergeMe() {}
 
-PmergeMe::PmergeMe(const PmergeMe& obj) {(void) obj;}
-
-PmergeMe& PmergeMe::operator=(const PmergeMe& obj)
-{
-	(void) obj;
-	return*this;
-}
-
-PmergeMe::~PmergeMe() {}
-
 long jacobstahlSequence(long n)
 {
 	if (n == 0)

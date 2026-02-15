@@ -20,14 +20,8 @@ class RPN
 {
 	private:
 		std::stack<int> stack_;
-		bool isOperator(char c) const;
-		int applyOperator(int left, int right, char op) const;
-		
 	public:
 		RPN();
-		RPN(const RPN& obj);
-		RPN &operator=(const RPN& obj);
-		~RPN();
 		int evaluate(const std::string& exp);
 };
 

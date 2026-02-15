@@ -17,15 +17,31 @@
 
 
 RPN::RPN() {}
-RPN::RPN(const RPN& obj) : stack_(obj.stack_) {} 
-RPN& RPN::operator=(const RPN& obj)
+
+static bool isOperator(char c)
 {
-	if (this != &obj)
-		stack_= obj.stack_;
-	return *this;
+	return (c == '+' || c == '-' || c == '/' || c == '*');
 }
 
-RPN::~RPN() {}
+static int applyOperator(int left, int right, char op)
+{
+	switch (op)
+	{
+		case '+':
+			return left + right;
+		case '-':
+			return left - right;
+		case '*':
+			return left * right;
+		case '/':
+			if (right == 0)
+				throw std::runtime_error("division by zero");
+			return left / right;
+		default:
+			throw std::runtime_error("invalid operator");
+	}
+}
+
 int RPN::evaluate(const std::string& exp)
 {
 	while (!stack_.empty())
@@ -58,28 +74,4 @@ int RPN::evaluate(const std::string& exp)
 	if (stack_.size() != 1)
 		throw std::runtime_error("malformed expression");
 	return stack_.top();
-}
-
-bool RPN::isOperator(char c) const
-{
-	return (c == '+' || c == '-' || c == '/' || c == '*');
-}
-
-int RPN::applyOperator(int left, int right, char op) const
-{
-	switch (op)
-	{
-		case '+':
-			return left + right;
-		case '-':
-			return left - right;
-		case '*':
-			return left * right;
-		case '/':
-			if (right == 0)
-				throw std::runtime_error("division by zero");
-			return left / right;
-		default:
-			throw std::runtime_error("invalid operator");
-	}
 }

@@ -164,12 +164,6 @@ make
 ./PmergeMe $(shuf -i 1-100000 -n 3000 | tr "\n" " ")
 ```
 
-## Run (3000 numbers, macOS)
-
-```bash
-./PmergeMe $(jot -r 3000 1 100000 | tr '\n' ' ')
-```
-
 ## Example output style (subject)
 
 ```

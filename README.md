@@ -158,7 +158,7 @@ make
 ./PmergeMe 3 5 9 7 4
 ```
 
-## Run (3000 numbers, Linux)
+## Run (3000 numbers)
 
 ```bash
 ./PmergeMe $(shuf -i 1-100000 -n 3000 | tr "\n" " ")

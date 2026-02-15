@@ -11,11 +11,16 @@
 /* ************************************************************************** */
 
 #include "PmergeMe.hpp"
+
+#include <iostream>
+#include <vector>
+#include <deque>
 #include <stdexcept>
 #include <climits>
-#include <cctype>
-#include <sstream>
 #include <cstdlib>
+#include <cctype>
+#include <ctime>
+#include <iomanip>
 
 static void validate_arguments(int argc, char **argv)
 {
@@ -54,88 +59,83 @@ static T argvToContainer(int argc, char **argv)
 }
 
 template <typename T>
-static bool isSorted(const T& cont)
+static void printContainerPreview(const T& cont, std::size_t previewCount)
 {
-	if (cont.size() < 1)
-		return true;
+	std::size_t n = cont.size();
 	typename T::const_iterator it = cont.begin();
-	typename T::const_iterator prev = it++;
-	for (; it != cont.end(); ++it, ++prev)
+	if (n <= previewCount)
 	{
-		if (*prev > *it)
-			return false;
+		for (std::size_t i = 0; i < n; ++i, ++it)
+		{
+			if (i) std::cout << " ";
+			std::cout << *it;
+		}
+		return;
 	}
-	return true;
+	for (std::size_t i = 0; i < previewCount; ++i, ++it)
+	{
+		if (i) std::cout << " ";
+		std::cout << *it;
+	}
+	std::cout << " [...]";
 }
 
-// static std::string argvToString(int argc, char **argv)
-// {
-// 	std::string str;
-// 	str += "[";
-// 	if (argc > 1)
-// 	{
-// 		str += argv[1];
-// 		for (int i = 2; argv[i]; ++i)
-// 		{
-// 			str += " ";
-// 			str += argv[i];
-// 		}
-// 	}
-// 	str += "]";
-// 	return str;
-// }
-
-template <typename T>
-static std::string containerToString(T& cont)
+static double elapsed_us(std::clock_t start, std::clock_t end)
 {
-	std::stringstream ss;
-	ss << "[";
-	typename T::const_iterator it = cont.begin();
-	typename T::const_iterator end = cont.end();
-
-	if (it != end)
-	{
-		ss << *it;
-		++it;
-	}
-	for (; it != end; ++it)
-	{
-		ss << " " << *it;
-	}
-	ss << "]";
-	return ss.str();
+	return (static_cast<double>(end - start) * 1000000.0) / static_cast<double>(CLOCKS_PER_SEC);
 }
 
 int main(int argc, char **argv)
 {
-    try
-    {
-        validate_arguments(argc, argv);
+	try
+	{
+		validate_arguments(argc, argv);
 
-        std::vector<int> v = argvToContainer<std::vector<int> >(argc, argv);
-        std::deque<int>  d = argvToContainer<std::deque<int> >(argc, argv);
+		std::vector<int> v = argvToContainer< std::vector<int> >(argc, argv);
+		std::deque<int>  d = argvToContainer< std::deque<int> >(argc, argv);
 
-        std::cout << "Before:  " << containerToString(v) << "\n";
+		std::cout << "Before: ";
+		printContainerPreview(v, 100);
+		std::cout << "\n";
 
+		PmergeMe sorter;
 
-        PmergeMe sorter;
+		std::clock_t v_start = std::clock();
 		sorter.mergeInsertionSort(v);
-		int vecComps = PmergeMe::comparisonNumber_;
+		int v_count = sorter.comparisonNumber_;
+		std::clock_t v_end = std::clock();
 
+		std::clock_t d_start = std::clock();
 		sorter.mergeInsertionSort(d);
-		int deqComps = PmergeMe::comparisonNumber_;
-			
-		std::cout << "After:   " << containerToString(v) << "\n";
-		std::cout << "Sorted?  " << (isSorted(v) ? "yes" : "no") << "\n";
-			
-		std::cout << "Vector number of comparisons: " << vecComps << "\n";
-		std::cout << "Deque number of comparisons: " << deqComps << "\n";
+		int d_count = sorter.comparisonNumber_;
+		std::clock_t d_end = std::clock();
 
-    }
-    catch (const std::exception &e)
-    {
-        std::cerr << e.what() << std::endl;
-        return 1;
-    }
-    return 0;
+		std::cout << "After:  ";
+		printContainerPreview(v, 100);
+		std::cout << "\n";
+
+		const std::size_t n = v.size();
+
+		std::cout << "Time to process a range of " << n
+		          << " elements with std::vector : "
+		          << std::fixed << std::setprecision(5)
+		          << elapsed_us(v_start, v_end) << " us\n";
+
+		std::cout << "Number of comprisons in the process of" << n
+				  << " elements with std::vector : " << v_count << std::endl;
+
+		std::cout << "Time to process a range of " << n
+		          << " elements with std::deque : "
+		          << std::fixed << std::setprecision(5)
+		          << elapsed_us(d_start, d_end) << " us\n";
+
+		std::cout << "Number of comprisons in the process of" << n
+				  << " elements with std::deque : " << d_count << std::endl;
+	}
+	catch (const std::exception&)
+	{
+		std::cerr << "Error" << std::endl;
+		return 1;
+	}
+	return 0;
 }

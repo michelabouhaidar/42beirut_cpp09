@@ -1,16 +1,30 @@
+*This project has been created as part of the 42 curriculum by **mabou-ha**.*
 
-# CPP09
+# CPP Module 09
 
-C++ Module 09 focuses on STL containers and algorithms (C++98).  
-This repository contains:
+## Description
 
-- `ex00/` — **Bitcoin Exchange** (`btc`)
-- `ex01/` — **Reverse Polish Notation** (`RPN`)
-- `ex02/` — **PmergeMe** (`PmergeMe`)
+CPP Module 09 is the final module of the C++ Piscine at 42.
+It focuses on advanced use of the C++ Standard Library, algorithmic thinking, and basic performance analysis.
 
-All projects are compiled with:
-- `-Wall -Wextra -Werror`
-- must also compile with `-std=c++98` 
+The module contains three exercises:
+
+* **ex00 – Bitcoin Exchange**
+  Parse historical Bitcoin data from a CSV file and compute exchange values for given dates.
+
+* **ex01 – Reverse Polish Notation (RPN)**
+  Implement a calculator that evaluates expressions written in Reverse Polish Notation using a stack.
+
+* **ex02 – PmergeMe**
+  Implement the Ford–Johnson (merge-insert) sorting algorithm and compare its performance using
+  `std::vector` and `std::deque`.
+
+The goal of this module is to learn how to:
+
+* Use STL containers efficiently.
+* Apply classic algorithms.
+* Handle parsing and error cases robustly.
+* Measure and compare execution time between containers.
 
 ---
 
@@ -18,167 +32,110 @@ All projects are compiled with:
 
 ```text
 cpp09/
-├── ex00/                          # Bitcoin Exchange
+├── ex00/
 │   ├── BitcoinExchange.cpp
 │   ├── BitcoinExchange.hpp
 │   ├── main.cpp
 │   ├── Makefile
-│   ├── data.csv                   # exchange rate database
-│   └── test.txt                   # sample input (optional)
-│
-├── ex01/                          # Reverse Polish Notation (RPN)
+├── ex01/
 │   ├── RPN.cpp
 │   ├── RPN.hpp
 │   ├── main.cpp
 │   ├── Makefile
-│   └── tests.sh                   # helper script for running test cases
-│
-└── ex02/                          # PmergeMe (Ford–Johnson / merge-insert sort)
+└── ex02/
     ├── PmergeMe.cpp
     ├── PmergeMe.hpp
-    ├── PmergeMe.tpp               # template implementation (if applicable)
     ├── main.cpp
     └── Makefile
-
 ```
+
 ---
 
-# ex00 — Bitcoin Exchange
+## Instructions
 
-## Goal
-Compute: `value * bitcoin_rate(date)` using a CSV database (`data.csv`) and an input file containing lines in the format:
+### Compilation
 
+Each exercise has its own Makefile.
+
+Example (from inside an exercise folder):
+
+```bash
+make
 ```
 
-date | value
+This will generate the executable for that exercise.
 
-````
+### Execution
 
-Rules (from the subject): :contentReference[oaicite:2]{index=2}
-- Program name: `btc`
-- Takes **a file** as argument.
-- Valid date format: `YYYY-MM-DD`
-- Valid value: float or positive integer in `[0, 1000]`
-- If the date does not exist in the DB, use the **closest lower date** in the DB.
-
-## Build
-```bash
-cd ex00
-make
-````
-
-## Run
+#### ex00 – Bitcoin Exchange
 
 ```bash
 ./btc input.txt
 ```
 
-## Expected behavior
-
-* If no file / cannot open file:
-
-  * `Error: could not open file.` 
-* For invalid input lines:
-
-  * `Error: bad input => <line>`
-* For negative values:
-
-  * `Error: not a positive number.`
-* For values > 1000:
-
-  * `Error: too large a number.` 
-
----
-
-# ex01 — RPN
-
-## Goal
-
-Evaluate a **Reverse Polish Notation** expression passed as a single argument.
-
-Rules (from the subject): 
-
-* Program name: `RPN`
-* Takes an RPN expression as argument (no brackets, no decimals required).
-* Allowed operators: `+ - * /`
-* Numbers used in input are always `< 10` (single-digit), though intermediate/result may exceed.
-* On error, print `Error` to standard error.
-
-## Build
-
-```bash
-cd ex01
-make
-```
-
-## Run
+#### ex01 – RPN
 
 ```bash
 ./RPN "8 9 * 9 - 9 - 9 - 4 - 1 +"
 ```
 
-## Example (subject)
-
-Outputs `42` for valid expressions; prints `Error` for invalid ones. 
-
----
-
-# ex02 — PmergeMe
-
-## Goal
-
-Sort a positive integer sequence using **merge-insert sort** (Ford–Johnson algorithm) and compare timing using **two containers**.
-
-Rules (from the subject): 
-
-* Program name: `PmergeMe`
-* Input: sequence of **positive integers** as arguments
-* Must use **Ford–Johnson** (merge-insertion) algorithm
-* Use **at least two different containers**
-* Must handle **at least 3000 integers**
-* On error: print `Error` to standard error
-* Output must include:
-
-  1. unsorted sequence (“Before:”)
-  2. sorted sequence (“After:”)
-  3. time for container #1
-  4. time for container #2
-     (format is free, but must show precision clearly) 
-
-## Build
+#### ex02 – PmergeMe
 
 ```bash
-cd ex02
-make
-```
-
-## Run (small)
-
-```bash
-./PmergeMe 3 5 9 7 4
-```
-
-## Run (3000 numbers)
-
-```bash
-./PmergeMe $(shuf -i 1-100000 -n 3000 | tr "\n" " ")
-```
-
-## Example output style (subject)
-
-```
-Before: 3 5 9 7 4
-After:  3 4 5 7 9
-Time to process a range of 5 elements with std::[...] : ...
-Time to process a range of 5 elements with std::[...] : ...
+./PmergeMe 3 5 9 7 4 2 8
 ```
 
 ---
 
-## AI usage
-AI tools were used in a limited way to:
-- help **review edge cases** and **validate input/error handling** requirements,
-- suggest **test cases** and **output formatting** consistent with the subject,
-- support **debugging/clarification** of STL and iterator-related pitfalls.
+## Exercises Overview
+
+### ex00 – Bitcoin Exchange
+
+* Reads a CSV file containing Bitcoin prices (`data.csv`).
+* Parses an input file containing `date | value`.
+* Outputs the converted value using the closest available date (previous valid date).
+* Handles invalid formats, invalid dates, negative values, and out-of-range numbers.
+
+### ex01 – Reverse Polish Notation
+
+* Evaluates mathematical expressions written in RPN.
+* Uses a stack to process operands and operators.
+* Supports operators: `+ - * /`.
+* Handles invalid expressions (missing operands, invalid tokens, division by zero).
+
+### ex02 – PmergeMe
+
+* Implements the Ford–Johnson sorting algorithm (merge-insertion sort).
+* Sorts the same input using:
+
+  * `std::vector`
+  * `std::deque`
+* Measures and prints execution time for both containers.
+* Validates input (positive integers, duplicates depending on your implementation rules).
 
 ---
+
+## Resources
+
+### C++ and STL
+
+* [https://cplusplus.com/reference/](https://cplusplus.com/reference/)
+
+### Algorithms (Ford–Johnson / Merge-Insertion Sort)
+
+* [https://en.wikipedia.org/wiki/Merge-insertion_sort](https://en.wikipedia.org/wiki/Merge-insertion_sort)
+* [https://dev.to/emuminov/human-explanation-and-step-by-step-visualisation-of-the-ford-johnson-algorithm-5g91](https://dev.to/emuminov/human-explanation-and-step-by-step-visualisation-of-the-ford-johnson-algorithm-5g91)
+
+### Reverse Polish Notation
+
+* [https://en.wikipedia.org/wiki/Reverse_Polish_notation](https://en.wikipedia.org/wiki/Reverse_Polish_notation)
+
+---
+
+## AI Usage
+
+AI (ChatGPT) was used in this project for:
+
+* Understanding some of the concepts required for this module, especially when an idea needed a clearer explanation.
+* Implementing details and to double-check typical edge cases during parsing and error handling.
+
